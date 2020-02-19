@@ -1,81 +1,56 @@
-//***************************************************************************
-//  Assignment #1
-//  Name: Broday Walker
-//  Parallel Programming
-//  Date: 
-//***************************************************************************
-//  Place general documentation here.
-//
-//
-//***************************************************************************
-
-/* FUNCTION TEMPLATE */
-// function Name::MethodName()
-// Parameters: 
-// Discuss what method does
-
-
 #include <stdio.h>
-#include <math.h> // For cos, sin
 #include <complex.h>
+#include <math.h>
 
-// C will not let N be declared as a const int and used to declare
-// the size of an array for some reason.
-#define N 8
 #define TAU 6.28318530718 // 2pi
-
-void print_array(const double *);
 
 int main()
 {
-    // Every element after element 7 (the 8th value) will be initialized
-    // to 0.
-    double real[N] = {3.6, 2.9, 5.6, 4.8, 3.3, 5.9, 5.0, 4.3};
-    double imaginary[N] = {2.6, 6.3, 4, 9.1, 0.4, 4.8, 2.6, 4.1};
-    double X_even[N] = {0};
-    double X_odd[N] = {0};
-    double XR[N] = {0};
-    double XI[N] = {0};
+    // Use enum N {N = some value} because enum members are constant 
+    // expressions.
+    // Using const in N = some number does not work in C as constant
+    // variables are really just read-only variables that can change their
+    // value.
+    enum N {N = 8};
+    // An array of complex numbers per the specification
+    double complex data[N] = {3.6 + 2.6 * I, 2.9 + 6.3 * I, 5.6 + 4.0 * I, 
+        4.8 + 9.1 * I, 3.3 + 0.4 * I, 5.9 + 4.8 * I, 5.0 + 2.6 * I, 
+        4.3 + 4.1 * I};
+    double complex even_sum = 0 + 0 * I;
+    double complex odd_sum = 0 + 0 * I;
+    double complex k_sum = 0 + 0 * I;
+
+    // Print the array to make sure it is correct
+    for (int i = 0; i < N; i++)
+        printf("Data %i: %.2f %+.2fi\n", i, creal(data[i]), cimag(data[i]));
+
     
-    printf("i: i%f\n", _Complex_I);
-    
-    double even_component_sumR = 0;
-    double even_component_sumI = 0;
-    for (int i = 1; i <= 1; i++)
+    for (int k = 1; k <= 1; k++) 
     {
-        for (int j = 0; j < N / 2; j++)
+        for(int j = 0; j < (N / 2); j++)
         {
-            // Even side
-            int even = 2 * j;
-            // Odd side
-            int odd = 2 * j + 1;
+            double even_index = (j * 2.0) / N;
+            double odd_index = ((j * 2.0) + 1) / N;
+            double complex even = data[j * 2] * (ccos(TAU * even_index) - I * csin(TAU * even_index * k));
+            double complex odd = data[(j * 2) + 1] * (ccos(TAU * odd_index) - I * csin(TAU * odd_index* k));
+            printf("Even[%d]: %f %+fi\n", j, creal(even), cimag(even));
+            printf("Odd[%d]: %f %+fi\n", j, creal(odd), cimag(odd));
 
-            // Even euler
-            double even_eulerR = cos(TAU * real[j]);
-            double even_eulerI = sin(TAU * imaginary[j]);
-            even_component_sumR += even_eulerR;
-            even_component_sumI += even_eulerI;
-
+            even_sum += even;
+            odd_sum += odd;  
         }
-        printf("Even real sum: %f\n Even imaginary sum: %f", 
-            even_component_sumR, even_component_sumI);
-        
+
+        // Print the sum of the even and odd parts
+        printf("Sum of the even part: %f %+fi\n", creal(even_sum), cimag(even_sum));
+        printf("Sum of the odd part: %f %+fi\n", creal(odd_sum), cimag(odd_sum));
+
+        // Combine all real and imaginary numbers to get X[k]
+        k_sum += even_sum + odd_sum;
     }
-
-    printf("%f", TAU);
+    // Print X(1)
+    printf("X(1): %f %fi\n", creal(k_sum), cimag(k_sum));
     
-
+    
 
     return 0;
 }
-
-void print_array(const double *ray)
-{
-    // Print the array
-    for (int i = 0; i < N; i++)
-    {
-        printf("%.2f ", ray[i]);
-    }
-    printf("\n");
-}
-
