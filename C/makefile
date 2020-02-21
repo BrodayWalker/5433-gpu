@@ -1,8 +1,12 @@
-complex : complex.o
-	gcc -o complex
+SRC = ./
+INC = ./
+OBJ = fft.o
 
-complex.o : complex.c stdio.h complex.h tgmath.h math.h
-	gcc -c complex.c
+fft : $(OBJ)
+	gcc -o fft.exe $(OBJ)
+
+fft.o : WalkerBrodaySeqVer.c 
+	gcc -c WalkerBrodaySeqVer.c -std=c99 -o fft.o
 
 clean :
-	rm *.exe complex.o
+	rm *.exe fftJobScript.* $(OBJ)

@@ -1,0 +1,17 @@
+
+#!/bin/bash
+# ==============================
+#PBS -l walltime=00:05:00
+#PBS -l nice=10
+#PBS -l nodes=1:ppn=1
+#PBS -q default
+# ==============================
+ExecutableName=fft.exe
+FileName=WalkerBrodaySeqVer.c
+# ==============================
+# Compile your code
+gcc -o $PBS_O_WORKDIR/$ExecutableName $PBS_O_WORKDIR/$FileName -std=c99
+
+# Run your executable
+$PBS_O_WORKDIR/$ExecutableName
+# ==============================
