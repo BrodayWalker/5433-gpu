@@ -16,8 +16,8 @@
 // To run fft.exe from the command line, navigate to the folder containing
 // the executable use ./fft.exe
 // Running the program creates an output file which is stored in the same
-// folder the executable was run from. This file contains the calculations
-// found by the Cooley-Tukey algorithm. 
+// folder the executable was run from. This file, named fft_output.txt,
+// contains the calculations found by the Cooley-Tukey algorithm. 
 //***************************************************************************
 
 #include <stdio.h>
@@ -43,11 +43,9 @@ int main()
     // Use these variables to store intermediate computation
     double complex even_sum = 0 + 0 * I;
     double complex odd_sum = 0 + 0 * I;
-    
 
-    // Print the array to make sure it is correct
-    for (int i = 0; i < N; i++)
-        printf("Data %i: %.2f %+.2fi\n", i, creal(data[i]), cimag(data[i]));
+    // An output file for FFT calculations
+    FILE *output = fopen("fft_output.txt", "w");
 
     // Two for-loops make up the Cooley-Tukey algorithm. The outside loop
     // controls how many Fourier coefficients are calculated. For each
@@ -59,35 +57,32 @@ int main()
     {
         for(int j = 0; j < (N / 2); j++)
         {
+            // Calculate even-index side
             double even_index = (j * 2.0) / N;
-            double odd_index = ((j * 2.0) + 1) / N;
             double complex even = data[j * 2] * (ccos(TAU * even_index) - I * csin(TAU * even_index * k));
+            // Calculate odd-index size
+            double odd_index = ((j * 2.0) + 1) / N;
             double complex odd = data[(j * 2) + 1] * (ccos(TAU * odd_index) - I * csin(TAU * odd_index* k));
-            // Print for testing
-            printf("Even[%d]: %f %+fi\n", j, creal(even), cimag(even));
-            printf("Odd[%d]: %f %+fi\n", j, creal(odd), cimag(odd));
-
+            
             even_sum += even;
             odd_sum += odd;  
         }
-
-        // Print the sum of the even and odd parts
-        printf("Sum of the even part: %f %+fi\n", creal(even_sum), cimag(even_sum));
-        printf("Sum of the odd part: %f %+fi\n", creal(odd_sum), cimag(odd_sum));
 
         // Combine all real and imaginary numbers to get X[k]
         X[k] += even_sum + odd_sum;
     }
 
-    // Output the results
-    printf("TOTAL PROCESSED SAMPLES: %i\n", N);
-    printf("================================\n");
+    // Output the results to fft_output.txt
+    fprintf(output, "TOTAL PROCESSED SAMPLES: %i\n", N);
+    fprintf(output, "================================\n");
     // Print X, the results array
     for (int i = 0; i < N; i++)
     {
-        printf("XR[%i]: %.4f\tXI[%i]: %.4fi\n", i, creal(X[i]), i, cimag(X[i]));
-        printf("================================\n");
+        fprintf(output, "XR[%i]: %.4f\tXI[%i]: %.4fi\n", i, creal(X[i]), i, cimag(X[i]));
+        fprintf(output, "================================\n");
     }
     
+    // Close output file
+    fclose(output);
     return 0;
 }
