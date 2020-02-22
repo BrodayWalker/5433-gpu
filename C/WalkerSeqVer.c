@@ -2,7 +2,7 @@
 // Assignment #1
 // Name: Broday Walker
 // Parallel Programming
-// Date: February 21, 2020
+// Date: February 22, 2020
 //***************************************************************************
 // This program implements a serial version of the Cooley-Tukey Fast Fourier
 // Transform algorithm. Per the program specification, an array of complex
@@ -10,21 +10,30 @@
 // Cooley-Tukey algorithm, N Fourier coefficients are calculated and printed
 // to a file. 
 //
+//                    *** Compilation instructions ***
 // To use this program, first compile it with a GNU compiler.
-// Example: gcc WalkerBrodaySeqVer.c -o fft.exe
+// Example: gcc -o fft.exe WalkerSeqVer.c -std=c99 -lm
 // The above command compiles this code into an executable named fft.exe.
 // To run fft.exe from the command line, navigate to the folder containing
-// the executable use ./fft.exe
+// the executable and use ./fft.exe
 // Running the program creates an output file which is stored in the same
 // folder the executable was run from. This file, named fft_output.txt,
-// contains the calculations found by the Cooley-Tukey algorithm. 
+// contains the calculations found by running the Cooley-Tukey algorithm. 
+// A simple makefile is also included for convenience.
+//
+//                       *** Turing Instructions ***
+// Use the included submission script by issuing the following command from
+// the terminal when logged in to Turing:
+// qsub fftJobScript
+// It may be necessary to run dos2unix fftJobScript if there is a 
+// submission error.
 //***************************************************************************
 
 #include <stdio.h>
 #include <complex.h>
 #include <math.h>
 
-#define TAU 6.28318530718 // 2pi
+#define TAU 6.28318530718 // same as 2 * pi - used to save a multiplication
 
 int main()
 {
@@ -47,10 +56,10 @@ int main()
     // An output file for FFT calculations
     FILE *output = fopen("fft_output.txt", "w");
 
-    // Two for-loops make up the Cooley-Tukey algorithm. The outside loop
+    // Two for-loops run the Cooley-Tukey algorithm. The outside loop
     // controls how many Fourier coefficients are calculated. For each
     // coefficient to be calculated, the inner loop runs N/2 times, finding
-    // both the even- and odd-indexed parts for Xm. Once the inner loop
+    // both the even- and odd-indexed parts for X[k]. Once the inner loop
     // has completed, the results are aggregated and the calculation for
     // a Fourier coefficient has completed.
     for (int k = 0; k < N; k++) 
@@ -59,10 +68,12 @@ int main()
         {
             // Calculate even-index side
             double even_index = (j * 2.0) / N;
-            double complex even = data[j * 2] * (ccos(TAU * even_index) - I * csin(TAU * even_index * k));
-            // Calculate odd-index size
+            double complex even = data[j * 2] * (ccos(TAU * even_index) 
+                - I * csin(TAU * even_index * k));
+            // Calculate odd-index side
             double odd_index = ((j * 2.0) + 1) / N;
-            double complex odd = data[(j * 2) + 1] * (ccos(TAU * odd_index) - I * csin(TAU * odd_index* k));
+            double complex odd = data[(j * 2) + 1] * (ccos(TAU * odd_index) 
+                - I * csin(TAU * odd_index* k));
             
             even_sum += even;
             odd_sum += odd;  
@@ -78,7 +89,8 @@ int main()
     // Print X, the results array
     for (int i = 0; i < N; i++)
     {
-        fprintf(output, "XR[%i]: %.4f\tXI[%i]: %.4fi\n", i, creal(X[i]), i, cimag(X[i]));
+        fprintf(output, "XR[%i]: %.4f\tXI[%i]: %.4fi\n", i, creal(X[i]), 
+            i, cimag(X[i]));
         fprintf(output, "================================\n");
     }
     

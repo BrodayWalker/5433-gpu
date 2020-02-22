@@ -7,10 +7,13 @@
 #PBS -q default
 # ==============================
 ExecutableName=fft.exe
-FileName=WalkerBrodaySeqVer.c
+FileName=WalkerSeqVer.c
 # ==============================
+# Switch to current working directory
+cd $PBS_O_WORKDIR
+
 # Compile your code
-gcc -o $PBS_O_WORKDIR/$ExecutableName $PBS_O_WORKDIR/$FileName -std=c99
+gcc -o $PBS_O_WORKDIR/$ExecutableName $PBS_O_WORKDIR/$FileName -std=c99 -lm
 
 # Run your executable
 $PBS_O_WORKDIR/$ExecutableName

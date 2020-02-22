@@ -1,12 +1,7 @@
-SRC = ./
-INC = ./
-OBJ = fft.o
+SRC = WalkerSeqVer.c
 
-fft : $(OBJ)
-	gcc -o fft.exe $(OBJ)
-
-fft.o : WalkerBrodaySeqVer.c 
-	gcc -c WalkerBrodaySeqVer.c -std=c99 -o fft.o
+fft.exe : $(SRC) 
+	gcc -o fft.exe $(SRC) -std=c99 -lm
 
 clean :
-	rm *.exe fftJobScript.* $(OBJ)
+	rm *.exe *.txt fftJobScript.*
