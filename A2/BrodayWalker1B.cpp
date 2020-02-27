@@ -1,15 +1,35 @@
 // gcc BrodayWalkerSequential.c -o BrodayWalkerSequential.exe
 
 #include <stdio.h>
+#include <cuda.h>
 
 enum N {N = 32};
 
 void print(int [][N], int);
 
+__global__ void matmulKernel(int *Ad, int *Bd, int *Cd, int width)
+{
+    int tx = threadIdx.x;
+    int ty = threadIdx.y;
+
+    float sum = 0;
+
+    for (int k = 0; k < width; k++)
+    {
+        int Aelement = Ad[ty * width + k];
+        int Belement = Bd[k * width + tx];
+        sum += Aelement * Belement;
+    }
+
+    Cd[ty * width + tx] = sum;
+}
+
 int main()
 {
     // Declarations
     int A[N][N], B[N][N], C[N][N];
+    int *Ad, Bd, Cd;
+    int size = N * N * sizeof(int);
 
     // Fill arrays A and C
     // Array C will be filled with 0s
@@ -28,6 +48,27 @@ int main()
             B[i][j] = row;
         row--;        
     }
+
+
+    cudaMalloc((void**)&Ad, size);
+    cudaMemcpy(Ad, A, size, cudaMemcpyHostToDevice);
+
+    cudaMalloc((void**)&Bd, size);
+    cudaMemcpy(Bd, B, size, cudaMemcpyHostToDevice);
+
+    cudaMalloc((void**)&Cd, size);
+    
+    dim3 dimGrid( 1, 1 );
+    dim3 dimBlock( N, N );
+
+    matmulKernel<<<dimGrid, dimBlock>>>(Ad, Bd, Cd, N);
+
+    cudaMemcpy(C, Cd, size, cudaMemcpyDeviceToHost);
+
+
+    cudaFree(Ad);
+    cudaFree(Bd);
+    cudaFree(Cd);
 
     // Print array A
     printf("Array A: \n");
