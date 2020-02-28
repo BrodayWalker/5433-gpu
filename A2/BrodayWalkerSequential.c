@@ -1,6 +1,7 @@
 // gcc BrodayWalkerSequential.c -o BrodayWalkerSequential.exe
 
 #include <stdio.h>
+#include <cuda.h> // For timing
 
 enum N {N = 32};
 
@@ -10,6 +11,14 @@ int main()
 {
     // Declarations
     int A[N][N], B[N][N], C[N][N];
+
+    // Declare the timer
+    // Reference: 
+    // https://devblogs.nvidia.com/how-implement-performance-metrics-cuda-cc/
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    float milliseconds = 0;
 
     // Fill arrays A and C
     // Array C will be filled with 0s
@@ -38,7 +47,9 @@ int main()
 
     printf("\n\nArray C before matrix multiplication: \n");
     print(C, N);
-    
+
+    /* Record start time */
+    cudaEventRecord(start);
     // Matrix multiplication - This method assumes all elements in array
     // C are initialized to 0.
     for (int i = 0; i < N; i++)
@@ -46,11 +57,16 @@ int main()
             for (int k = 0; k < N; k++)
               C[i][j] += A[i][k] * B[k][j];
             
+    /* Record end time */
+    cudaEventRecord(stop);
+    /* Returns the elapsed time in milliseconds to the first argument */
+    cudaEventElapsedTime(&milliseconds, start, stop);
 
     printf("\n\nArray C after matrix multiplication: \n");
     print(C, N);
 
-
+    // Print elapsed time
+    printf("\nElapsed time in milliseconds: %f\n", milliseconds);
 
     return 0;
 }
