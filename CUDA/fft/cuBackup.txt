@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <cmath>
+#include <complex>
+#include <cuda.h>
+
+using namespace std;
+
+#define TAU 6.28318530718 // same as 2 * pi - used to save a multiplication
+
+//===========================================================================
+// Argument1: double complex *data - this is the original data. It will not
+// be modified.
+// Argument 2: double complex *results - Fourier coefficients are stored here
+__global__
+void fft(double complex *data, double complex *results)
+{
+    results[threadIdx.x] = data[threadIdx.x];
+
+
+
+
+}
+//===========================================================================
+
+
+int main()
+{
+    // Use enum N {N = <some value>} because enum members are constant 
+    // expressions in C.
+    // Using const int N = <some number> does not work in C as constant
+    // variables are really just read-only variables that can change their
+    // value.
+    enum N {N = 10};
+    
+    // An array of complex numbers per the specification
+    double complex data[N] = {3.6 + 2.6 * I, 2.9 + 6.3 * I, 5.6 + 4.0 * I, 
+        4.8 + 9.1 * I, 3.3 + 0.4 * I, 5.9 + 4.8 * I, 5.0 + 2.6 * I, 
+        4.3 + 4.1 * I};
+    
+    // The results array, initialized to 0 + 0i for each element
+    double complex results[N] = {0 + 0 * I};
+    
+    // Use these variables to store intermediate computation
+    double complex even_sum = 0 + 0 * I;
+    double complex odd_sum = 0 + 0 * I;
+
+    // An output file for FFT calculations
+    FILE *output = fopen("fft_output.txt", "w");
+
+    // Device pointers
+    double complex *datad;
+    double complex *resultsd;
+
+    // Size of double complex data type
+    const int COMPLEX_ARRAY_SIZE = N * sizeof(double complex);
+
+    cudaMalloc( (void**)&datad, COMPLEX_ARRAY_SIZE );
+    cudaMalloc( (void**)&resultsd, COMPLEX_ARRAY_SIZE );
+    cudaMemcpy( datad, data, COMPLEX_ARRAY_SIZE, cudaMemcpyHostToDevice );
+    cudaMemcpy( resultsd, results, COMPLEX_ARRAY_SIZE, cudaMemcpyHostToDevice );
+
+    dim3 dimGrid( 1, 1 );
+    dim3 dimBlock( N, 1 );
+
+    // Invoke the kernel
+    fft<<<dimGrid, dimBlock>>>(datad, resultsd);
+
+    cudaMemcpy(results, resultsd, COMPLEX_ARRAY_SIZE, cudaMemcpyDeviceToHost);
+    cudaFree( datad );
+    cudaFree( resultsd );
+
+
+    // Output the results to fft_output.txt
+    fprintf(output, "TOTAL PROCESSED SAMPLES: %i\n", N);
+    fprintf(output, "================================\n");
+    // Print X, the results array
+    for (int i = 0; i < N; i++)
+    {
+        fprintf(output, "XR[%i]: %.4f\tXI[%i]: %.4fi\n", i, creal(results[i]), 
+            i, cimag(results[i]));
+        fprintf(output, "================================\n");
+    }
+    
+    // Close output file
+    fclose(output);
+    return 0;
+}
