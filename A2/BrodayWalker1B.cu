@@ -30,6 +30,7 @@ int main()
     int A[N * N], B[N * N], C[N * N];
     int *Ad, *Bd, *Cd;
     int size = N * N * sizeof(int);
+    int sum = 0;
 
     // Declare the timer
     // Reference: 
@@ -90,12 +91,15 @@ int main()
     cudaFree(Bd);
     cudaFree(Cd);
 
-    // Print results
-    printf("\n\nArray C: \n");
-    print(C, N);
+    // Sum the array and print the results
+    for (int i = 0; i < N * N; i++)
+        sum += C[i];
+    
+    printf("The summation of all the elements is: %d.\n", sum);
+
     
     // Print elapsed time
-    printf("\nElapsed time in milliseconds: %f\n", milliseconds);
+    printf("\nElapsed time in milliseconds: %f.\n", milliseconds);
 
     return 0;
 }

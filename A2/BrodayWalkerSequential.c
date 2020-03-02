@@ -11,10 +11,10 @@ int main()
 {
     // Declarations
     int A[N][N], B[N][N], C[N][N];
+    int sum = 0;
 
     // Timers
     struct timeval start, end;
-    long long elapsed = 0;
 
     // Fill arrays A and C
     // Array C will be filled with 0s
@@ -34,16 +34,6 @@ int main()
         row--;        
     }
 
-    // Print arrays
-    printf("Array A: \n");
-    print(A, N);
-
-    printf("\n\nArray B: \n");
-    print(B, N);
-
-    printf("\n\nArray C before matrix multiplication: \n");
-    print(C, N);
-
     gettimeofday(&start, NULL);
     // Matrix multiplication - This method assumes all elements in array
     // C are initialized to 0.
@@ -53,21 +43,20 @@ int main()
               C[i][j] += A[i][k] * B[k][j];
     
     gettimeofday(&end, NULL);
+    // Calculate function running time
+    double seconds = (end.tv_sec - start.tv_sec);
+	double micros = ((seconds * 1000000.0) + end.tv_usec) - (start.tv_usec);
     // Convert from microseconds to milliseconds
-    long long start_milli = (start.tv_sec * 1000) + (start.tv_usec / 1000);
-    long long end_milli = (end.tv_sec * 1000) + (end.tv_usec / 1000);
-    printf("start_millis: %lld\n", start_milli);
-    printf("end_milli: %lld\n", end_milli);
-
-    elapsed = end_milli - start_milli;
-
-
-    printf("\n\nArray C after matrix multiplication: \n");
-    print(C, N);
-
-    printf("\nElapsed time in milliseconds: %lld", elapsed);
-
+    double millis = micros / 1000.0;
     
+	// Sum the array
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            sum += C[i][j];
+
+    printf("The summation of all the elements is %d.\n\n", sum);
+
+    printf("Time elpased is %f seconds and %f milliseconds.\n", seconds, millis);
 
     return 0;
 }
