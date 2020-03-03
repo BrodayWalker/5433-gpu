@@ -1,11 +1,23 @@
 // gcc BrodayWalkerSequential.c -o BrodayWalkerSequential.exe
+// On Maverick2: sbatch mvk2SeqMatMul
+
+//***************************************************************************
+//  Name: Broday Walker
+//  Instructor: Dr. Colmenares
+//  Class: CMPS 5433
+//  Date: March 2, 2020
+//***************************************************************************
+//  This program implements sequential matrix multiplication using the
+// traditional, straight-forward O(n^3) algorithm. When the program is run,
+// the runtime of the matrix multiplication algorithm is calculated and
+// printed in milliseconds. The sum of all elements in the array is also
+// given.
+//***************************************************************************
 
 #include <stdio.h>
 #include <sys/time.h> // For timing
 
-enum N {N = 32};
-
-void print(int [][N], int);
+enum N {N = 32}; // Define size of array
 
 int main()
 {
@@ -54,22 +66,10 @@ int main()
         for (int j = 0; j < N; j++)
             sum += C[i][j];
 
+    // Print results
     printf("The summation of all the elements is %d.\n\n", sum);
 
     printf("Time elpased is %f seconds and %f milliseconds.\n", seconds, millis);
 
     return 0;
-}
-
-// function: print()
-// parameters: int [][N], int width
-// The print function prints a 2D array
-void print(int ray[][N], int width)
-{
-    for (int i = 0; i < width; i++)
-    {
-        for (int j = 0; j < width; j++)
-            printf("%d ", ray[i][j]);
-        printf("\n");
-    }
 }

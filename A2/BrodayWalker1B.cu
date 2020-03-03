@@ -1,12 +1,25 @@
 // nvcc BrodayWalker1B.cu -o BrodayWalker1B.exe
+// On Maverick2: sbatch mvk2GPUMatMul
+
+//***************************************************************************
+//  Name: Broday Walker
+//  Instructor: Dr. Colmenares
+//  Class: CMPS 5433
+//  Date: March 2, 2020
+//***************************************************************************
+//  This program implements matrix multiplication using a GPU on Maverick2.
+// The program reports the elapsed time taken to complete the matrix
+// multiplication in milliseconds. It is significantly faster than its
+// sequential counterpart.
+//***************************************************************************
 
 #include <stdio.h>
 #include <cuda.h>
 
 enum N {N = 32};
 
-void print(int [], int);
-
+// matmulKernel performs matrix multiplication on a linearized array
+// This code was given in the slides and adapted for use here
 __global__ void matmulKernel(int *Ad, int *Bd, int *Cd, int width)
 {
     int tx = threadIdx.x;
@@ -95,24 +108,11 @@ int main()
     for (int i = 0; i < N * N; i++)
         sum += C[i];
     
-    printf("The summation of all the elements is: %d.\n", sum);
+    // Print results
+    printf("The summation of all the elements is %d.\n", sum);
 
-    
     // Print elapsed time
     printf("\nElapsed time in milliseconds: %f.\n", milliseconds);
 
     return 0;
-}
-
-// function: print()
-// parameters: int [][N], int width
-// The print function prints a 2D array
-void print(int ray[], int width)
-{
-    for (int i = 0; i < width; i++)
-    {
-        for (int j = 0; j < width; j++)
-            printf("%d ", ray[i * width + j]);
-        printf("\n");
-    }
 }
