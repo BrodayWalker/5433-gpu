@@ -1,5 +1,5 @@
-// nvcc BrodayWalker1B.cu -o BrodayWalker1B.exe
 // On Maverick2: sbatch mvk2GPUMatMul
+// nvcc BrodayWalker1B.cu -o BrodayWalker1B.exe
 
 //***************************************************************************
 //  Name: Broday Walker
