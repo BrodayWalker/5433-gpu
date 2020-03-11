@@ -21,8 +21,7 @@ int main()
 
     printf("=============================\n");
 
-    // Device number and name
-    printf("Device number: %d\n", 0);
+    // Device name
     printf("Device name: %s\n", prop.name);
 
     // Size of shared memory per block

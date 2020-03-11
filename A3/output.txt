@@ -1,0 +1,19 @@
+=============================
+Device name: GeForce GTX 1080 Ti
+Size of shared memory per block: 49152
+Number of registers per block: 65536
+Warp size: 32
+Maximum number of threads per block: 1024
+Maximum number of threads for 3d layout (X, Y, Z): 1024, 1024, 64
+Maximum grid size (X, Y, Z): 2147483647, 65535, 65535
+Maximum number of blocks per streaming processor: not given
+=============================
+Device name: Tesla V100-PCIE-16GB
+Size of shared memory per block: 49152
+Number of registers per block: 65536
+Warp size: 32
+Maximum number of threads per block: 1024
+Maximum number of threads for 3d layout (X, Y, Z): 1024, 1024, 64
+Maximum grid size (X, Y, Z): 2147483647, 65535, 65535
+Maximum number of blocks per streaming processor: not given
+=============================
